@@ -1,19 +1,20 @@
-# Build stage
-FROM maven:3.9-eclipse-temurin-17 AS build
+# 1. Change the Build Stage to use JDK 21
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# 1. Copy the pom.xml (The "Recipe")
+# Copy the pom and source
 COPY pom.xml .
-
-# 2. Copy the src folder (The "Ingredients")
 COPY src ./src
 
-# 3. Build the jar file
+# Build the jar file
 RUN mvn clean package -DskipTests
 
-# Package stage (The final small image)
-FROM eclipse-temurin:17-jre
+# 2. Change the Package Stage to use JRE 21
+FROM eclipse-temurin:21-jre
 WORKDIR /app
+
+# Copy the built jar from the build stage
 COPY --from=build /app/target/*.jar app.jar
+
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
