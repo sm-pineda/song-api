@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/pineda/songs")
+@CrossOrigin(origins = "*") // <--- ADD THIS LINE HERE
 public class SongController {
 
     @Autowired
